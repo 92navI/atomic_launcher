@@ -1,0 +1,20 @@
+{
+  "name": "imp-launcher",
+  "productName": "Atomic Launcher",
+  "version": "1.0.0",
+  "description": "A profile based launcher for a seamless modded experience.",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "_92navI_",
+  "license": "GNU",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "axios": "^1.10.0",
+    "electron": "^36.4.0",
+    "fast-xml-parser": "^5.2.5",
+    "luxon": "^3.6.1",
+    "toastify-js": "^1.12.0"
+  }
+}

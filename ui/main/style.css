@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Lora", serif;
+    /* background-color: #1e1a19; */
+    color: white;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 160px;
+    background-color: #1c1816;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.user-section img {
+    width: 32px;
+    height: 32px;
+}
+
+.nav-link {
+    padding: 10px 0;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.nav-link img {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-bottom {
+    margin-bottom: 20px;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    background-color: #1f1a19;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 18px;
+    position: relative; /* Add this */
+}
+
+.topbar div {
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+}
+
+.topbar-link {
+    padding: 10px 10px;
+}
+
+.topbar-underline {
+    position: absolute;
+    bottom: -4px;
+    height: 3px;
+    background: orange;
+    border-radius: 2px;
+    transition: left 0.3s cubic-bezier(.4,0,.2,1), width 0.3s cubic-bezier(.4,0,.2,1);
+    z-index: 1;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #201a18;
+    background-image: url('icons/main_image.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    background-size: cover;
+}
+
+.season-label {
+    font-family: "Great Vibes", cursive;
+    font-size: 50px;
+    /* margin-top: 30px; */
+}
+
+/* .content img {
+  max-width: 100%;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 10px;
+} */
+.main-button {
+    position: relative;
+    top: -30px;
+    padding: 12px 120px;
+    font-size: 18px;
+    background: linear-gradient(to right, #d45c00, #f9aa2e);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    background-color: #1f1a19;
+    padding-top: 5px;
+    padding-bottom: 25px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
