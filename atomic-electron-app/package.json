@@ -9,21 +9,17 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 0 --fix"
   },
   "dependencies": {
-    "electron": "^37.2.0",
     "adm-zip": "^0.5.16",
     "axios": "^1.10.0",
+    "electron": "^37.2.0",
+    "electron-updater": "^6.6.2",
     "fast-xml-parser": "^5.2.5",
     "luxon": "^3.6.1"
   },
   "devDependencies": {
-    "electron-builder": "^26.0.12",
-    "electronmon": "^2.0.3",
     "@types/adm-zip": "^0.5.7",
     "@types/axios": "^0.14.4",
     "@types/electron": "^1.6.12",
-    "@types/luxon": "^3.6.2",
-    "@types/react": "^19.1.8",
-    "vite-plugin-electron": "^0.29.0",
-    "vite-plugin-electron-renderer": "^0.14.6"
+    "@types/luxon": "^3.6.2"
   }
 }
