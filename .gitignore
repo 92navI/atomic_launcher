@@ -7,13 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-electron
-release
-*.local
-.vite-cache
+# Dev files
+node_modules/
+dist/
+dist-electron/
+release/
+.vite-cache/
 *.tsbuildinfo
+*.local
 
 # Editor directories and files
 .vscode/*
