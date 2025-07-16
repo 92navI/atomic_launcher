@@ -1,0 +1,10 @@
+{
+  "name": "atomic-shared",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -b",
+    "lint": "eslint \"utils/**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint \"utils/**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 0 --fix"
+  }
+}

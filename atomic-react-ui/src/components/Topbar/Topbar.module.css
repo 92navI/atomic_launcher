@@ -1,0 +1,31 @@
+.topbar {
+  background-color: #161616;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 18px;
+  position: relative; /* Add this */
+}
+
+.topbar div {
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.topbar_link {
+  padding: 10px 10px;
+}
+
+.topbar_underline {
+  position: absolute;
+  bottom: -4px;
+  height: 3px;
+  background: orange;
+  border-radius: 2px;
+  transition:
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}

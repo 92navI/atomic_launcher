@@ -1,0 +1,47 @@
+{
+  "name": "atomic-launcher",
+  "private": true,
+  "version": "0.0.1-alpha-alpha",
+  "type": "module",
+  "workspaces": [
+    "atomic-*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "typecheck:all": "npm run typecheck -workspaces",
+    "build": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder",
+    "build:quick": "vite build && electron-builder",
+    "lint:all": "npm run lint -workspaces",
+    "lint:fix:all": "npm run lint:fix -workspaces",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@electron/asar": "^4.0.0",
+    "@types/node": "^24.0.13",
+    "react-router-dom": "^7.6.3",
+    "winston": "^3.17.0",
+    "zod": "^3.25.73"
+  },
+  "devDependencies": {
+    "@eslint/css": "^0.9.0",
+    "@eslint/js": "^9.30.1",
+    "@eslint/json": "^0.12.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "eslint": "^9.30.1",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-json": "^4.0.1",
+    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "react-icons": "^5.5.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.0.2",
+    "vite-plugin-mpa": "^1.2.0"
+  },
+  "main": "dist-electron/main.js"
+}

@@ -1,0 +1,127 @@
+.sidebar {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 60px;
+  background-color: #161616;
+  color: white;
+  transition: width 0.2s ease-in-out;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.sidebar:hover {
+  width: 200px;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-section {
+  margin: 10px 7px;
+  background-color: #2e2e2e;
+  border-radius: 10px;
+  /* border-bottom: 1px solid #333; */
+}
+
+.sidebar-label {
+  padding: 0 16px;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sidebar:hover .sidebar-label {
+  opacity: 1;
+}
+
+.sidebar-item {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center icon when collapsed */
+  padding: 10px 0;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    padding 0.2s,
+    justify-content 0.2s;
+}
+
+.sidebar:hover .sidebar-item {
+  justify-content: flex-start; /* Align left on hover */
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.sidebar-item:hover {
+  background-color: #3f3f3f;
+}
+
+.sidebar-icon {
+  font-size: 18px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-image {
+  width: inherit;
+  height: inherit;
+  object-fit: fill;
+  display: block;
+  border-radius: 7px;
+}
+
+.sidebar-text {
+  display: none;
+  margin-left: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.2s,
+    width 0.2s,
+    margin 0.2s;
+  pointer-events: none;
+}
+
+.sidebar:hover .sidebar-text {
+  display: block;
+  opacity: 1;
+  width: auto;
+  margin-left: 12px;
+  pointer-events: auto;
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.sidebar-divider {
+  height: 2px;
+  width: 80%;
+  /* background-color: #474747; */
+  background: linear-gradient(
+    to right,
+    transparent,
+    #474747 20%,
+    #474747 80%,
+    transparent
+  );
+  margin: 0 auto;
+}

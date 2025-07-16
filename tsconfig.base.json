@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "rootDir": "./",
+
+    "baseUrl": "./",
+    "paths": {
+      "@main/*": ["./atomic-electron-app/*"],
+      "@renderer/*": ["./atomic-react-ui/*"],
+      "@shared/*": ["./atomic-shared/*"],
+      "@public/*": ["./public/*"]
+    },
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "references": [{ "path": "./atomic-shared" }]
+}
