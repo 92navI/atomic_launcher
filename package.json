@@ -1,7 +1,9 @@
 {
   "name": "atomic-launcher",
   "private": true,
-  "version": "0.0.1-alpha-alpha",
+  "version": "0.0.1-alpha",
+  "description": "A launcher that lets you join any modded server in 3 clicks.",
+  "author": "_92navi_",
   "type": "module",
   "workspaces": [
     "atomic-*"
