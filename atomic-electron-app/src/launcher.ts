@@ -5,11 +5,10 @@ import Paths from './util/path-manager.js';
 import fs from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 import { DateTime } from 'luxon';
-import { WindowManager } from './window-manager.js';
 import logger from '@shared/utils/logger.js';
 import { ForgeJson, Library, VanillaJson } from '@shared/types/json-schemas.js';
 
-export default function initLauncher(_windowManager: WindowManager) {
+export default function initLauncher() {
   ipcMain.handle('play', async () => {
     try {
       const version = '1.20.1-forge-47.4.2';

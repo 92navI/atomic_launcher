@@ -3,10 +3,8 @@ import { app, BrowserWindow, Menu } from 'electron';
 import { isDev, isMac } from '@shared/utils/config.js';
 import initInstaller from './installer.js';
 import initLauncher from './launcher.js';
-import { WindowManager } from './window-manager.js';
+import { windowManager } from './window-manager.js';
 import logger from '@shared/utils/logger.js';
-
-const windowManager = new WindowManager();
 
 app.whenReady().then(() => {
   logger.info('App started');
@@ -17,14 +15,10 @@ app.whenReady().then(() => {
 
   // Open main window
   logger.info('Creating main window');
-  try {
-    createMainWindow();
-  } catch (err) {
-    logger.error(err);
-  }
+  createMainWindow();
 
-  initInstaller(windowManager);
-  initLauncher(windowManager);
+  initInstaller();
+  initLauncher();
 });
 
 app.on('window-all-closed', () => {

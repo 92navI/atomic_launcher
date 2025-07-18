@@ -16,7 +16,7 @@ import {
   VersionManifestSchema,
   type VersionManifest,
 } from '@shared/types/json-schemas.js';
-import { WindowManager } from './window-manager.js';
+import { windowManager } from './window-manager.js';
 import { DownloadProgress } from '@shared/types/IcpEvents.js';
 import logger from '@shared/utils/logger.js';
 
@@ -31,11 +31,11 @@ const launcherProfilesJson = {
 const VERSION = '1.20.1';
 let downloadWindow: BrowserWindow;
 
-export default function initDownloader(windowManager: WindowManager): void {
+export default function initDownloader(): void {
   ipcMain.handle('install', async () => {
     console.log('Starting download for version:', VERSION);
     try {
-      downloadWindow = createDownloadWindow(windowManager);
+      downloadWindow = createDownloadWindow();
 
       await installVersion(VERSION, handleProgress);
 
@@ -76,7 +76,7 @@ export default function initDownloader(windowManager: WindowManager): void {
 
 //   return win;
 // }
-function createDownloadWindow(windowManager: WindowManager): BrowserWindow {
+function createDownloadWindow(): BrowserWindow {
   return windowManager.createWindow(
     'download',
     {

@@ -3,15 +3,15 @@ import { isDev } from '@shared/utils/config.js';
 import * as p from 'path';
 import logger from '@shared/utils/logger';
 
-export class WindowManager {
-  private windows = new Map<string, BrowserWindow>();
+const windows = new Map<string, BrowserWindow>();
 
+export const windowManager = {
   createWindow(
     id: string,
     options: BrowserWindowConstructorOptions,
     htmlPath: string
   ): BrowserWindow {
-    if (this.windows.has(id)) return this.windows.get(id)!;
+    if (windows.has(id)) return windows.get(id)!;
     logger.info('Staring creaton');
 
     const win = new BrowserWindow({
@@ -37,18 +37,18 @@ export class WindowManager {
       logger.info(htmlPath);
       win.loadFile(htmlPath);
     }
-    win.on('closed', () => this.windows.delete(id));
+    win.on('closed', () => windows.delete(id));
 
     logger.info('done');
-    this.windows.set(id, win);
+    windows.set(id, win);
     return win;
-  }
+  },
 
   get(id: string): BrowserWindow | null {
-    return this.windows.get(id) ?? null;
-  }
+    return windows.get(id) ?? null;
+  },
 
   close(id: string): void {
-    this.windows.get(id)?.close();
-  }
-}
+    windows.get(id)?.close();
+  },
+};
