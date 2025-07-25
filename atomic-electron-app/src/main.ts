@@ -3,9 +3,9 @@ import { app, BrowserWindow, Menu } from 'electron';
 import { isDev, isMac } from '@shared/utils/config.js';
 import initInstaller from './installer.js';
 import initLauncher from './launcher.js';
-import { windowManager } from './window-manager.js';
+import { windowManager } from './managers/window-manager.js';
 import logger from '@shared/utils/logger.js';
-import { updateManager } from './update-manager.js';
+import { updateManager } from './managers/update-manager.js';
 
 app.whenReady().then(async () => {
   logger.info('App started');

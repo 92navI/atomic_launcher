@@ -16,7 +16,7 @@ import {
   VersionManifestSchema,
   type VersionManifest,
 } from '@shared/types/json-schemas.js';
-import { windowManager } from './window-manager.js';
+import { windowManager } from './managers/window-manager.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
 import logger from '@shared/utils/logger.js';
 
