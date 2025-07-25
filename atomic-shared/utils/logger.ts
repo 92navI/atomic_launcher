@@ -12,17 +12,22 @@ const logFormat = printf(({ level, message, timestamp, label }) => {
 });
 
 const logFile = p.join(app.getPath('userData'), 'launch.log');
+console.log(logFile);
 
 const logger = winston.createLogger({
   level: logLevel,
-  format: combine(
-    colorize(),
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    logFormat
-  ),
   transports: [
-    new winston.transports.File({ filename: logFile }),
-    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: logFile,
+      format: combine(timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }), logFormat),
+    }),
+    new winston.transports.Console({
+      format: combine(
+        colorize(),
+        timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+        logFormat
+      ),
+    }),
   ],
   exitOnError: false,
 });

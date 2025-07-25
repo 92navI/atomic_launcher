@@ -8,10 +8,23 @@
   "workspaces": [
     "atomic-*"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/92navI/atomic_launcher"
+  },
+  "build": {
+    "publish": {
+      "provider": "github",
+      "owner": "92navI",
+      "repo": "atomic_launcher",
+      "releaseType": "release"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "typecheck:all": "npm run typecheck -workspaces",
-    "build": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder",
+    "build": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder --publish=never",
+    "publish": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder --publish=always",
     "build:quick": "vite build && electron-builder",
     "lint:all": "npm run lint -workspaces",
     "lint:fix:all": "npm run lint:fix -workspaces",

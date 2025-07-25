@@ -5,17 +5,24 @@ import initInstaller from './installer.js';
 import initLauncher from './launcher.js';
 import { windowManager } from './window-manager.js';
 import logger from '@shared/utils/logger.js';
+import { updateManager } from './update-manager.js';
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   logger.info('App started');
 
   // Hide menu
   logger.info('Hiding menu');
   Menu.setApplicationMenu(null);
 
-  // Open main window
   logger.info('Creating main window');
   createMainWindow();
+
+  await updateManager.checkForUpdates();
+
+  // setTimeout(() => {
+  //   windowManager.get('splash')?.destroy();
+  //   windowManager.get('main')?.show();
+  // }, 10000);
 
   initInstaller();
   initLauncher();
@@ -37,6 +44,7 @@ function createMainWindow(): BrowserWindow {
     {
       width: isDev ? 1300 : 800,
       height: 600,
+      show: false,
     },
     p.join(app.getAppPath(), './dist/src/index.html')
   );

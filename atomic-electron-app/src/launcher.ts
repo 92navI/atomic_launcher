@@ -9,7 +9,7 @@ import logger from '@shared/utils/logger.js';
 import { ForgeJson, Library, VanillaJson } from '@shared/types/json-schemas.js';
 
 export default function initLauncher() {
-  ipcMain.handle('play', async () => {
+  ipcMain.on('play', async () => {
     try {
       const version = '1.20.1-forge-47.4.2';
       await launchGame(version);

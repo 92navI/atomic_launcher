@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { spawn } from 'child_process';
 import Paths from '../util/path-manager.js';
 import { downloadFile } from '../util/fetch.js';
-import { DownloadProgress } from '@shared/types/IcpEvents.js';
+import { DownloadProgress } from '@shared/types/ipc-events.js';
 
 const GAME_DIR = Paths.BASE_DIR;
 const VERSION = '1.20.1-forge-47.4.2';
