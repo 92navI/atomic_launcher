@@ -18,10 +18,6 @@ export async function downloadFile(
 ): Promise<string | void> {
   if (fs.existsSync(dest)) {
     if (expectedHash) {
-      // const fileHash = crypto
-      //   .createHash('sha1')
-      //   .update(fs.readFileSync(dest))
-      //   .digest('hex');
       const fileHash = await getFileHash(dest);
       if (fileHash === expectedHash) return 'File already valid';
     } else {

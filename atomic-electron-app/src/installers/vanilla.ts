@@ -1,12 +1,11 @@
 import * as fs from 'fs';
 import * as p from 'path';
 import axios from 'axios';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import AdmZip from 'adm-zip';
-import Paths from './util/path-manager.js';
-import { downloadFile } from './util/fetch.js';
-import installForgeClient from './installers/forge.js';
-import { isDev } from '@shared/utils/config.js';
+import Paths from '../util/paths.js';
+import { downloadFile } from '../util/fetch.js';
+import installForgeClient from '../installers/forge.js';
 import {
   AssetIndexJsonSchema,
   Rule,
@@ -16,18 +15,10 @@ import {
   VersionManifestSchema,
   type VersionManifest,
 } from '@shared/types/json-schemas.js';
-import { windowManager } from './managers/window-manager.js';
+import { windowManager, windowUtils } from '../managers/window-manager.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
 import logger from '@shared/utils/logger.js';
 
-const launcherProfilesJson = {
-  profiles: {},
-  selectedProfile: 'default',
-  clientToken: '00000000-0000-0000-0000-000000000000',
-  authenticationDatabase: {},
-  settings: {},
-  version: 3,
-};
 const VERSION = '1.20.1';
 let downloadWindow: BrowserWindow;
 
@@ -35,13 +26,15 @@ export default function initDownloader(): void {
   ipcMain.on('install', async () => {
     console.log('Starting download for version:', VERSION);
     try {
-      downloadWindow = createDownloadWindow();
+      downloadWindow = windowUtils.createDownloadWindow();
 
       await installVersion(VERSION, handleProgress);
 
       console.log('Download complete, installing Forge client...');
 
-      await installForgeClient(handleProgress).catch(console.error);
+      await installForgeClient('1.20.1-forge-47.4.2', handleProgress).catch(
+        console.error
+      );
 
       downloadWindow.close();
 
@@ -76,16 +69,6 @@ export default function initDownloader(): void {
 
 //   return win;
 // }
-function createDownloadWindow(): BrowserWindow {
-  return windowManager.createWindow(
-    'download',
-    {
-      width: isDev ? 1100 : 700,
-      height: 180,
-    },
-    p.join(app.getAppPath(), './dist/src/windows/download/index.html')
-  );
-}
 
 async function installVersion(
   version: string,
@@ -206,18 +189,6 @@ async function installVersion(
       filename: name,
       done: index,
       total: Object.keys(assetObjects).length,
-    });
-  }
-
-  const launcherProfilesPath = p.join(Paths.BASE_DIR, 'launcher_profiles.json');
-  if (!fs.existsSync(launcherProfilesPath)) {
-    const jsonString = JSON.stringify(launcherProfilesJson, null, 2);
-
-    fs.writeFile(launcherProfilesPath, jsonString, (err) => {
-      if (err) {
-        throw err;
-      }
-      logger.info('Created launcher_profiles.json.');
     });
   }
 

@@ -1,7 +1,6 @@
 import * as p from 'path';
 import { app, BrowserWindow, Menu } from 'electron';
 import { isDev, isMac } from '@shared/utils/config.js';
-import initInstaller from './installer.js';
 import initLauncher from './launcher.js';
 import { windowManager } from './managers/window-manager.js';
 import logger from '@shared/utils/logger.js';
@@ -19,12 +18,11 @@ app.whenReady().then(async () => {
 
   await updateManager.checkForUpdates();
 
-  // setTimeout(() => {
-  //   windowManager.get('splash')?.destroy();
-  //   windowManager.get('main')?.show();
-  // }, 10000);
+  setTimeout(() => {
+    windowManager.get('splash')?.destroy();
+    windowManager.get('main')?.show();
+  }, 10000);
 
-  initInstaller();
   initLauncher();
 });
 

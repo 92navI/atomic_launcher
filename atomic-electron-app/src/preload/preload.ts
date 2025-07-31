@@ -4,7 +4,7 @@ import type {
   IpcC2SEvents,
   IpcC2SInvokeEvents,
 } from '@shared/types/ipc-events';
-import type { Init, Last } from '@shared/types/utils';
+import type { Init, Last } from '@shared/types/util-types';
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
   on<K extends keyof IpcS2CEvents>(

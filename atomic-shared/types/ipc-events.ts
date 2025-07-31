@@ -7,6 +7,7 @@ export interface IpcS2CEvents {
 export interface IpcC2SEvents {
   play: [];
   install: [];
+  update: [];
 }
 
 export interface IpcC2SInvokeEvents {

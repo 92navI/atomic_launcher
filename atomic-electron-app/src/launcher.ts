@@ -1,18 +1,20 @@
 import { spawn } from 'child_process';
 import * as p from 'path';
 import { ipcMain } from 'electron';
-import Paths from './util/path-manager.js';
+import Paths from './util/paths.js';
 import fs from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 import { DateTime } from 'luxon';
 import logger from '@shared/utils/logger.js';
 import { ForgeJson, Library, VanillaJson } from '@shared/types/json-schemas.js';
+import tryInstallLatest from './managers/profile-manager.js';
 
 export default function initLauncher() {
   ipcMain.on('play', async () => {
     try {
-      const version = '1.20.1-forge-47.4.2';
-      await launchGame(version);
+      const profile = 'imperial';
+      await tryInstallLatest(profile);
+      await launchGame(profile);
       return { success: true };
     } catch (err: unknown) {
       logger.error(err);
@@ -21,12 +23,15 @@ export default function initLauncher() {
   });
 }
 
-async function launchGame(VERSION: string) {
+async function launchGame(profile: string, profileVersion?: string) {
   // --- CONFIG --- //
   const JAVA_PATH: string = Paths.getJavaPath();
   const MC_VERSION = '1.20.1';
-  const INSTANCE_NAME = 'test';
-  const NATIVES_DIR = Paths.getNativesPath('1.20.1');
+  // const VERSION = '1.20.1-forge-47.4.2';
+  const VERSION = '1.20.1';
+  const INSTANCE_NAME =
+    profile + (profileVersion ? `@${profileVersion}` : '@latest');
+  const NATIVES_DIR = Paths.getNativesPath(MC_VERSION);
   const VERSION_DIR = Paths.getVersionPath(VERSION);
   const VERSION_JAR = p.join(VERSION_DIR, `${VERSION}.jar`);
   const VANILLA_VERSION_DIR = Paths.getVersionPath(MC_VERSION);
@@ -43,40 +48,37 @@ async function launchGame(VERSION: string) {
   const xuid = '2535443780439106';
   const clientId = 'your-client-id';
 
-  const forgeJson = await loadJson(p.join(VERSION_DIR, `${VERSION}.json`));
+  // const forgeJson = await loadJson(p.join(VERSION_DIR, `${VERSION}.json`));
+  const forgeJson = undefined;
   const vanillaJson = await loadJson(
     p.join(VANILLA_VERSION_DIR, `${MC_VERSION}.json`)
   );
 
-  function buildClasspath(forgeJson: ForgeJson, vanillaJson: VanillaJson) {
+  function buildClasspath(vanillaJson: VanillaJson, forgeJson?: ForgeJson) {
     const classpath = [];
-    forgeJson.libraries.forEach((lib: Library) =>
-      classpath.push(p.join(Paths.LIB_DIR, lib.downloads.artifact.path))
-    );
     vanillaJson.libraries.forEach((lib: Library) =>
       classpath.push(p.join(Paths.LIB_DIR, lib.downloads.artifact.path))
     );
+    if (forgeJson) {
+      forgeJson.libraries.forEach((lib: Library) =>
+        classpath.push(p.join(Paths.LIB_DIR, lib.downloads.artifact.path))
+      );
+    }
     classpath.push(VERSION_JAR);
     return classpath;
   }
 
   function buildArgs(
-    forgeJson: ForgeJson,
+    classpath: Array<string>,
     vanillaJson: VanillaJson,
-    classpath: Array<string>
+    forgeJson?: ForgeJson
   ) {
     const sep = process.platform === 'win32' ? ';' : ':';
     const CLASSPATH_STR = classpath.join(sep);
 
-    const javaArgs = [
-      `-Xmx${MAX_HEAP}`,
-      `-Xms${MIN_HEAP}`,
-      // '-Dfml.ignorePatchDiscrepancies=true',
-      // '-Dfml.ignoreInvalidMinecraftCertificates=true',
-      // `-DlibraryDirectory=${Paths.LIB_DIR}`
-    ];
+    const javaArgs = [`-Xmx${MAX_HEAP}`, `-Xms${MIN_HEAP}`];
 
-    const gameArgs = [forgeJson.mainClass];
+    const gameArgs = [forgeJson ? forgeJson.mainClass : vanillaJson.mainClass];
 
     // Push vanilla args
     javaArgs.push(
@@ -107,38 +109,40 @@ async function launchGame(VERSION: string) {
           version_name: VERSION,
           game_directory: GAME_DIR,
           assets_root: Paths.ASSETS_DIR,
-          assets_index_name: '5',
+          assets_index_name: vanillaJson.assetIndex.id,
           auth_uuid: uuid,
           auth_access_token: accessToken,
           clientid: clientId,
           auth_xuid: xuid,
           user_type: 'msa',
-          version_type: 'release',
+          version_type: vanillaJson.type,
         }
       )
     );
 
     // Push foge args
-    gameArgs.push(
-      ...forgeJson.arguments.game.filter((a) => typeof a === 'string')
-    );
-    javaArgs.push(
-      ...substituteArray(
-        forgeJson.arguments.jvm.filter((a) => typeof a === 'string'),
-        {
-          library_directory: Paths.LIB_DIR,
-          classpath_separator: sep,
-          version_name: MC_VERSION,
-        }
-      )
-    );
+    if (forgeJson) {
+      gameArgs.push(
+        ...forgeJson.arguments.game.filter((a) => typeof a === 'string')
+      );
+      javaArgs.push(
+        ...substituteArray(
+          forgeJson.arguments.jvm.filter((a) => typeof a === 'string'),
+          {
+            library_directory: Paths.LIB_DIR,
+            classpath_separator: sep,
+            version_name: MC_VERSION,
+          }
+        )
+      );
+    }
 
     return javaArgs.concat(gameArgs);
   }
 
   // --- Build & launch --- //
-  const classpath = buildClasspath(forgeJson, vanillaJson);
-  const args = buildArgs(forgeJson, vanillaJson, classpath);
+  const classpath = buildClasspath(vanillaJson, forgeJson);
+  const args = buildArgs(classpath, vanillaJson, forgeJson);
 
   console.log('\n=== Launching Minecraft ===\n');
 

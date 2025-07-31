@@ -7,7 +7,7 @@ export default class Paths {
   static NATIVES_DIR = p.join(Paths.BASE_DIR, 'natives');
   static LIB_DIR = p.join(Paths.BASE_DIR, 'libraries');
   static ASSETS_DIR = p.join(Paths.BASE_DIR, 'assets');
-  static INSTANCES_DIR = p.join(Paths.BASE_DIR, 'instances');
+  static INSTANCES_DIR = p.join(Paths.BASE_DIR, 'profiles');
   static JRE_DIR = p.join(Paths.BASE_DIR, 'jre');
   static TEMP_DIR = p.join(Paths.BASE_DIR, 'temp');
 

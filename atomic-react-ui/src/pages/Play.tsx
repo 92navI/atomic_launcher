@@ -1,5 +1,6 @@
-import InstallButton from '../components/main-buttons/InstallButton';
+// import InstallButton from '../components/main-buttons/InstallButton';
 import PlayButton from '../components/main-buttons/PlayButton';
+// import UpdateButton from '../components/main-buttons/UpdateButton';
 import Topbar from '../components/Topbar/Topbar';
 import styles from './Play.module.css';
 
@@ -12,16 +13,8 @@ export default function Play() {
       <div className={styles.content} />
       <div className={styles.footer}>
         <PlayButton />
-        <InstallButton />
-        {/* <button className="main-button" id="install-button">
-          Install
-        </button>
-        <button className="main-button" id="play-button">
-          Play
-        </button>
-        <button className="main-button hidden" id="update-button">
-          Update
-        </button> */}
+        {/* <InstallButton />
+        <UpdateButton /> */}
         Latest Patch: {version}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { IpcC2SEvents, IpcS2CEvents, IpcC2SInvokeEvents } from './ipc-events';
-import { Init, Last } from './utils';
+import { Init, Last } from './util-types';
 export {};
 
 // --- RENDERER SIDE IPC ---

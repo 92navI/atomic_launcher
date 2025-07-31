@@ -140,3 +140,27 @@ export const AssetIndexJsonSchema = z.object({
 });
 
 export type AssetIndexJson = z.infer<typeof AssetIndexJsonSchema>;
+
+// ____________________S3 Profile Version Index____________________
+const ProfileVersionSchema = z.object({
+  id: z.string(),
+  file: z.string(),
+  sha256: z.string(),
+  size: z.number(),
+  timestamp: z.string(),
+});
+
+export const ProfileVersionListSchema = z.object({
+  profileType: z.enum(['map', 'server']),
+  minecraftVersion: z.string(),
+  versions: z.array(ProfileVersionSchema),
+});
+
+export type ProfileVersionList = z.infer<typeof ProfileVersionListSchema>;
+
+export const LatestProfileVersionSchema = ProfileVersionSchema.extend({
+  profileType: z.enum(['map', 'server']),
+  minecraftVersion: z.string(),
+});
+
+export type LatestProfileVersion = z.infer<typeof LatestProfileVersionSchema>;

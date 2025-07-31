@@ -62,3 +62,20 @@ export const windowManager = {
     windows.get(id)?.close();
   },
 };
+
+export const windowUtils = {
+  createDownloadWindow(): BrowserWindow {
+    return windowManager.createWindow(
+      'download',
+      {
+        width: isDev ? 1100 : 700,
+        height: 180,
+        skipTaskbar: true,
+        resizable: false,
+        frame: false,
+        titleBarStyle: 'hidden',
+      },
+      p.join(app.getAppPath(), './dist/src/windows/download/index.html')
+    );
+  },
+};

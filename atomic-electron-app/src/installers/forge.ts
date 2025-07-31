@@ -1,26 +1,31 @@
 import * as p from 'path';
 import * as fs from 'fs';
 import { spawn } from 'child_process';
-import Paths from '../util/path-manager.js';
+import Paths from '../util/paths.js';
 import { downloadFile } from '../util/fetch.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
+import logger from '@shared/utils/logger.js';
 
-const GAME_DIR = Paths.BASE_DIR;
-const VERSION = '1.20.1-forge-47.4.2';
-const INSTALLER_DIR = p.join(GAME_DIR, 'installers');
-const INSTALLER_JAR = p.join(
-  INSTALLER_DIR,
-  `forge-1.20.1-47.4.2-installer.jar`
-);
+const launcherProfilesJson = {
+  profiles: {},
+  selectedProfile: 'default',
+  clientToken: '00000000-0000-0000-0000-000000000000',
+  authenticationDatabase: {},
+  settings: {},
+  version: 3,
+};
 
 export default async function installForgeClient(
+  version: string,
   progressCallback?: (progress: DownloadProgress) => void
 ): Promise<void> {
-  fs.mkdirSync(INSTALLER_DIR, { recursive: true });
+  fs.mkdirSync(Paths.TEMP_DIR, { recursive: true });
 
   const forgeURL = `https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.2/forge-1.20.1-47.4.2-installer.jar`;
 
-  console.log(`Downloading Forge installer for ${VERSION}...`);
+  console.log(`Downloading Forge installer for ${version}...`);
+
+  const INSTALLER_JAR = p.join(Paths.TEMP_DIR, `${version}-installer.jar`);
 
   try {
     await downloadFile(forgeURL, INSTALLER_JAR, null, progressCallback);
@@ -29,15 +34,27 @@ export default async function installForgeClient(
     console.error(`Error downloading Forge installer: ${err}`);
     return;
   }
+  const launcherProfilesPath = p.join(Paths.BASE_DIR, 'launcher_profiles.json');
+  if (!fs.existsSync(launcherProfilesPath)) {
+    const jsonString = JSON.stringify(launcherProfilesJson, null, 2);
+
+    fs.writeFile(launcherProfilesPath, jsonString, (err) => {
+      if (err) {
+        throw err;
+      }
+      logger.info('Created launcher_profiles.json.');
+    });
+  }
 
   // Launch installer
-  const args = ['-jar', INSTALLER_JAR, '--installClient', GAME_DIR];
+  const args = ['-jar', INSTALLER_JAR, '--installClient', Paths.BASE_DIR];
 
   const forgeInstall = spawn(Paths.getJavaPath(), args, { stdio: 'inherit' });
 
   forgeInstall.on('close', (code) => {
     if (code === 0) {
       console.log('Forge installed successfully.');
+      fs.rmSync(launcherProfilesPath);
     } else {
       console.error(`Forge installer exited with code ${code}`);
     }
