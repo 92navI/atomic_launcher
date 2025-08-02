@@ -1,11 +1,9 @@
 import * as fs from 'fs';
 import * as p from 'path';
 import axios from 'axios';
-import { BrowserWindow, ipcMain } from 'electron';
 import AdmZip from 'adm-zip';
 import Paths from '../util/paths.js';
 import { downloadFile } from '../util/fetch.js';
-import installForgeClient from '../installers/forge.js';
 import {
   AssetIndexJsonSchema,
   Rule,
@@ -15,62 +13,9 @@ import {
   VersionManifestSchema,
   type VersionManifest,
 } from '@shared/types/json-schemas.js';
-import { windowManager, windowUtils } from '../managers/window-manager.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
-import logger from '@shared/utils/logger.js';
 
-const VERSION = '1.20.1';
-let downloadWindow: BrowserWindow;
-
-export default function initDownloader(): void {
-  ipcMain.on('install', async () => {
-    console.log('Starting download for version:', VERSION);
-    try {
-      downloadWindow = windowUtils.createDownloadWindow();
-
-      await installVersion(VERSION, handleProgress);
-
-      console.log('Download complete, installing Forge client...');
-
-      await installForgeClient('1.20.1-forge-47.4.2', handleProgress).catch(
-        console.error
-      );
-
-      downloadWindow.close();
-
-      return { success: true };
-    } catch (err: unknown) {
-      logger.error(err);
-      if (err instanceof Error) return { success: false, error: err };
-    }
-  });
-}
-
-// function createDownloadWindow(): BrowserWindow {
-//   const win = new BrowserWindow({
-//     title: 'Atomic Downloader',
-//     width: isDev ? 1100 : 700,
-//     height: 180,
-//     skipTaskbar: true,
-//     resizable: false,
-//     frame: false,
-//     titleBarStyle: 'hidden',
-//     webPreferences: {
-//       preload: p.join(app.getAppPath(), '../preload/download.js'),
-//       contextIsolation: true,
-//       nodeIntegration: false,
-//     },
-//   });
-
-//   // Open devtools if in dev env
-//   if (isDev) win.webContents.openDevTools();
-
-//   win.loadFile(p.join(app.getAppPath(), '../ui/download/index.html'));
-
-//   return win;
-// }
-
-async function installVersion(
+export default async function installVersion(
   version: string,
   handleProgress: (_progress: DownloadProgress) => void
 ): Promise<void> {
@@ -212,8 +157,4 @@ function getOSNativeKey(): string {
   if (process.platform === 'win32') return 'windows';
   if (process.platform === 'darwin') return 'macos';
   return 'linux';
-}
-
-function handleProgress(progress: DownloadProgress) {
-  windowManager.ipcFromWin(downloadWindow).send('download-progress', progress);
 }

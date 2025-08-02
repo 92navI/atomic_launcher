@@ -1,7 +1,6 @@
 import * as p from 'path';
 import { app, BrowserWindow, Menu } from 'electron';
 import { isDev, isMac } from '@shared/utils/config.js';
-import initLauncher from './launcher.js';
 import { windowManager } from './managers/window-manager.js';
 import logger from '@shared/utils/logger.js';
 import { updateManager } from './managers/update-manager.js';
@@ -22,8 +21,6 @@ app.whenReady().then(async () => {
     windowManager.get('splash')?.destroy();
     windowManager.get('main')?.show();
   }, 10000);
-
-  initLauncher();
 });
 
 app.on('window-all-closed', () => {

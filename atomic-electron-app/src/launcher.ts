@@ -1,29 +1,15 @@
 import { spawn } from 'child_process';
 import * as p from 'path';
-import { ipcMain } from 'electron';
 import Paths from './util/paths.js';
 import fs from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 import { DateTime } from 'luxon';
-import logger from '@shared/utils/logger.js';
 import { ForgeJson, Library, VanillaJson } from '@shared/types/json-schemas.js';
-import tryInstallLatest from './managers/profile-manager.js';
 
-export default function initLauncher() {
-  ipcMain.on('play', async () => {
-    try {
-      const profile = 'imperial';
-      await tryInstallLatest(profile);
-      await launchGame(profile);
-      return { success: true };
-    } catch (err: unknown) {
-      logger.error(err);
-      if (err instanceof Error) return { success: false, error: err.message };
-    }
-  });
-}
-
-async function launchGame(profile: string, profileVersion?: string) {
+export default async function launchGame(
+  profile: string,
+  profileVersion?: string
+) {
   // --- CONFIG --- //
   const JAVA_PATH: string = Paths.getJavaPath();
   const MC_VERSION = '1.20.1';
