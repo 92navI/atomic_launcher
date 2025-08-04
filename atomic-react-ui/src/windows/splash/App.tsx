@@ -2,21 +2,28 @@ import './index.css';
 import { useArrayState } from '../../utils/hooks';
 import atomic from '../../assets/atomic.png';
 import icon from '../../assets/icon.jpg';
+import RestartPrompt from './RestartPrompt';
+import { useState } from 'react';
+import { Visibility } from './RestartPrompt.types';
 
 export default function App() {
-  const [terminal, { add }] = useArrayState([
+  const [terminal, { add, addMult }] = useArrayState([
     'Launching app.',
     'Cracking launch codes...',
     'Checking for guidance firmware updates...',
   ]);
+  const [RestartPromptDisplay, setRestartPromptDisplay] =
+    useState<Visibility>('hidden');
 
-  console.log('started app');
-
-  window.ipcRenderer.on('update-message', (_event, msg) => {
+  window.ipcRenderer.on('splash-message', (_event, msg) => {
     add(msg);
   });
-  window.ipcRenderer.on('update-error', (_event, _err) => {
-    add('A fatal error occured while updating.');
+  window.ipcRenderer.on('splash-prompt-restart', () => {
+    addMult(['Confirm restart to install update:', '', '']);
+    setRestartPromptDisplay('visible');
+  });
+  window.ipcRenderer.on('splash-error', (_event, msg) => {
+    add(`<div style="color:red">${msg}</div>`);
   });
   return (
     <div className="splash-wrapper">
@@ -24,14 +31,12 @@ export default function App() {
       <img src={atomic} className="text" />
       <div className="shade" />
       <div className="terminal">
-        {terminal.map((msg) => (
-          <>
-            {'> ' + msg}
-            <br />
-          </>
+        {terminal.map((msg, i) => (
+          <div key={i}>{'> ' + msg}</div>
         ))}
         {'> '}
       </div>
+      <RestartPrompt visibility={RestartPromptDisplay} />
     </div>
   );
 }

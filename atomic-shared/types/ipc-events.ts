@@ -1,13 +1,15 @@
 export interface IpcS2CEvents {
   'download-progress': [DownloadProgress];
-  'update-message': [string];
-  'update-error': [Error];
+  'splash-message': [string];
+  'splash-prompt-restart': [];
+  'splash-error': [string];
 }
 
 export interface IpcC2SEvents {
   play: [];
   install: [];
   update: [];
+  'splash-restart': [];
 }
 
 export interface IpcC2SInvokeEvents {

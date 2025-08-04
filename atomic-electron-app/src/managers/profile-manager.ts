@@ -9,6 +9,8 @@ import {
 } from '@shared/types/json-schemas';
 import AdmZip from 'adm-zip';
 import { compareVersions } from 'compare-versions';
+import tryInstallVersion from '../installers/vanilla';
+import installForgeClient from '../installers/forge';
 
 const CURRENT_VERSION = '1.0.0';
 
@@ -41,7 +43,26 @@ export default async function tryInstallLatest(profile: string) {
   logger.info(
     `Profile ${profile} was updated from ${CURRENT_VERSION} to ${latestVersion.id}.`
   );
-  return true;
+
+  installMcVersion(
+    latestVersion.minecraft.version,
+    latestVersion.minecraft.type,
+    latestVersion.minecraft.vanillaVersion
+  );
+  return;
+}
+
+async function installMcVersion(
+  version: string,
+  type: 'vanilla' | 'forge',
+  mcVersion?: string
+) {
+  if (type == 'vanilla') {
+    await tryInstallVersion(version, (_progress) => {});
+  } else if (type == 'forge' && mcVersion) {
+    await tryInstallVersion(mcVersion, (_progress) => {});
+    await installForgeClient(version, (_progress) => {});
+  }
 }
 
 function unzipDirectory(

@@ -14,7 +14,7 @@ export const windowManager = {
     devtools: boolean = true
   ): BrowserWindow {
     if (windows.has(id)) return windows.get(id)!;
-    logger.info('Staring creaton');
+    logger.info(`Started ${id} window creation`);
 
     const win = new BrowserWindow({
       ...options,
@@ -30,10 +30,9 @@ export const windowManager = {
       },
     });
 
-    logger.info('Opening devtools');
     if (isDev && devtools) win.webContents.openDevTools();
 
-    logger.info('Loading window');
+    logger.info('Loading window contents');
     if (isDev) win.loadURL(`http://localhost:5173/${id}.html`);
     else {
       logger.info(htmlPath);
@@ -41,7 +40,7 @@ export const windowManager = {
     }
     win.on('closed', () => windows.delete(id));
 
-    logger.info('done');
+    logger.info(`${id} window creation complete`);
     windows.set(id, win);
     return win;
   },

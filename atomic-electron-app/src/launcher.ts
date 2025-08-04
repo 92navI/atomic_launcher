@@ -4,7 +4,13 @@ import Paths from './util/paths.js';
 import fs from 'fs';
 import { XMLParser } from 'fast-xml-parser';
 import { DateTime } from 'luxon';
-import { ForgeJson, Library, VanillaJson } from '@shared/types/json-schemas.js';
+import {
+  ForgeJson,
+  Library,
+  VanillaJson,
+  VanillaJsonSchema,
+} from '@shared/types/json-schemas.js';
+import { loadJson } from './util/json.js';
 
 export default async function launchGame(
   profile: string,
@@ -37,7 +43,8 @@ export default async function launchGame(
   // const forgeJson = await loadJson(p.join(VERSION_DIR, `${VERSION}.json`));
   const forgeJson = undefined;
   const vanillaJson = await loadJson(
-    p.join(VANILLA_VERSION_DIR, `${MC_VERSION}.json`)
+    p.join(VANILLA_VERSION_DIR, `${MC_VERSION}.json`),
+    VanillaJsonSchema
   );
 
   function buildClasspath(vanillaJson: VanillaJson, forgeJson?: ForgeJson) {
@@ -152,16 +159,6 @@ export default async function launchGame(
   mcProcess.on('error', (err: Error) => {
     console.error('Minecraft execution failed:', err);
   });
-}
-
-async function loadJson(jsonPath: string) {
-  try {
-    const data = await fs.promises.readFile(jsonPath, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Failed to load or parse JSON:', err);
-    return undefined;
-  }
 }
 
 function substituteArray(

@@ -5,6 +5,8 @@ import Paths from '../util/paths.js';
 import { downloadFile } from '../util/fetch.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
 import logger from '@shared/utils/logger.js';
+import { loadJson, writeJson } from '../util/json.js';
+import { VersionConfigSchema } from '@shared/types/json-schemas.js';
 
 const launcherProfilesJson = {
   profiles: {},
@@ -19,7 +21,10 @@ export default async function installForgeClient(
   version: string,
   progressCallback?: (progress: DownloadProgress) => void
 ): Promise<void> {
-  fs.mkdirSync(Paths.TEMP_DIR, { recursive: true });
+  const versionListPath = p.join(Paths.VERSIONS_DIR, 'versions.json');
+  let versionList =
+    (await loadJson(versionListPath, VersionConfigSchema)) ?? [];
+  if (versionList.includes(version)) return;
 
   const forgeURL = `https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.4.2/forge-1.20.1-47.4.2-installer.jar`;
 
@@ -54,6 +59,11 @@ export default async function installForgeClient(
   forgeInstall.on('close', (code) => {
     if (code === 0) {
       console.log('Forge installed successfully.');
+
+      if (!versionList.includes(version))
+        versionList = [...versionList, version];
+      writeJson(versionListPath, versionList);
+
       fs.rmSync(launcherProfilesPath);
     } else {
       console.error(`Forge installer exited with code ${code}`);

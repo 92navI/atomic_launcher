@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 type ArrayStateActions<T> = {
   add: (item: T) => void;
+  addMult: (item: T[]) => void;
   addFirst: (item: T) => void;
   remove: (item: number) => void;
   removeItem: (item: T) => void;
@@ -16,6 +17,8 @@ export const useArrayState = <T>(
   const [items, setItems] = useState(initialItems);
 
   const add = (item: T) => setItems([...items, item]);
+
+  const addMult = (item: T[]) => setItems([...items, ...item]);
 
   const addFirst = (item: T) => setItems([item, ...items]);
 
@@ -35,6 +38,15 @@ export const useArrayState = <T>(
 
   return [
     items,
-    { add, addFirst, remove, removeItem, removeFirst, removeLast, clear },
+    {
+      add,
+      addMult,
+      addFirst,
+      remove,
+      removeItem,
+      removeFirst,
+      removeLast,
+      clear,
+    },
   ];
 };

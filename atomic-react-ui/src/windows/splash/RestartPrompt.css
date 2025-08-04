@@ -1,0 +1,29 @@
+.restart-container {
+  position: fixed;
+  bottom: 27px;
+  left: 25px;
+  z-index: 3;
+}
+
+.restart-buttons {
+  display: flex;
+  gap: 18px;
+}
+
+.restart-button {
+  font-family: 'VT323', monospace;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 25px;
+  padding: 1px 5px;
+  background-color: transparent;
+  color: rgb(255, 181, 54);
+  border: none;
+  cursor: pointer;
+}
+
+.restart-button:hover,
+.restart-button.selected {
+  background-color: rgb(255, 181, 54);
+  color: white;
+}

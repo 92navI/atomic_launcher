@@ -1,4 +1,4 @@
-// import InstallButton from '../components/main-buttons/InstallButton';
+import InstallButton from '../components/main-buttons/InstallButton';
 import PlayButton from '../components/main-buttons/PlayButton';
 // import UpdateButton from '../components/main-buttons/UpdateButton';
 import Topbar from '../components/Topbar/Topbar';
@@ -13,8 +13,8 @@ export default function Play() {
       <div className={styles.content} />
       <div className={styles.footer}>
         <PlayButton />
-        {/* <InstallButton />
-        <UpdateButton /> */}
+        <InstallButton />
+        {/* <UpdateButton /> */}
         Latest Patch: {version}
       </div>
     </div>

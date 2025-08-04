@@ -10,15 +10,22 @@ import {
   VanillaJson,
   VanillaJsonSchema,
   Version,
+  VersionConfigSchema,
   VersionManifestSchema,
   type VersionManifest,
 } from '@shared/types/json-schemas.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
+import { loadJson, writeJson } from '../util/json.js';
 
-export default async function installVersion(
+export default async function tryInstallVersion(
   version: string,
   handleProgress: (_progress: DownloadProgress) => void
 ): Promise<void> {
+  const versionListPath = p.join(Paths.VERSIONS_DIR, 'versions.json');
+  let versionList =
+    (await loadJson(versionListPath, VersionConfigSchema)) ?? [];
+  if (versionList.includes(version)) return;
+
   const NATIVE_DIR = Paths.getNativesPath(version);
 
   const manifestURL: string =
@@ -137,6 +144,8 @@ export default async function installVersion(
     });
   }
 
+  if (!versionList.includes(version)) versionList = [...versionList, version];
+  writeJson(versionListPath, versionList);
   console.log(`Vanilla ${version} installation complete!`);
 }
 

@@ -148,6 +148,11 @@ const ProfileVersionSchema = z.object({
   sha256: z.string(),
   size: z.number(),
   timestamp: z.string(),
+  minecraft: z.object({
+    version: z.string(),
+    type: z.enum(['vanilla', 'forge']),
+    vanillaVersion: z.string().optional(),
+  }),
 });
 
 export const ProfileVersionListSchema = z.object({
@@ -164,3 +169,8 @@ export const LatestProfileVersionSchema = ProfileVersionSchema.extend({
 });
 
 export type LatestProfileVersion = z.infer<typeof LatestProfileVersionSchema>;
+
+// ____________________Version Config____________________
+export const VersionConfigSchema = z.array(z.string());
+
+export type VersionConfig = z.infer<typeof VersionConfigSchema>;
