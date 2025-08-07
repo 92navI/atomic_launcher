@@ -23,7 +23,7 @@ app.whenReady().then(async () => {
   setTimeout(() => {
     windowManager.get('splash')?.destroy();
     windowManager.get('main')?.show();
-  }, 3000);
+  }, 4000);
 });
 
 app.on('window-all-closed', () => {

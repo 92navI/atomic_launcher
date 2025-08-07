@@ -13,8 +13,8 @@ type ProgressCallback = (progress: {
 export async function downloadFile(
   url: string,
   dest: string,
-  expectedHash: string | null = null,
-  progressCallback: ProgressCallback | null = null
+  expectedHash?: string,
+  progressCallback?: ProgressCallback
 ): Promise<string | void> {
   if (fs.existsSync(dest)) {
     if (expectedHash) {

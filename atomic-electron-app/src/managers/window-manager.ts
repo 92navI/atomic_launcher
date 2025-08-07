@@ -69,7 +69,7 @@ export const windowUtils = {
       {
         width: isDev ? 1100 : 700,
         height: 180,
-        skipTaskbar: true,
+        // skipTaskbar: true,
         resizable: false,
         frame: false,
         titleBarStyle: 'hidden',

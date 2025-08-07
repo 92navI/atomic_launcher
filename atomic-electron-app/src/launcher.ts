@@ -6,6 +6,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { DateTime } from 'luxon';
 import {
   ForgeJson,
+  ForgeJsonSchema,
   Library,
   VanillaJson,
   VanillaJsonSchema,
@@ -19,8 +20,8 @@ export default async function launchGame(
   // --- CONFIG --- //
   const JAVA_PATH: string = Paths.getJavaPath();
   const MC_VERSION = '1.20.1';
-  // const VERSION = '1.20.1-forge-47.4.2';
-  const VERSION = '1.20.1';
+  const VERSION = '1.20.1-forge-47.4.2';
+  // const VERSION = '1.20.1';
   const INSTANCE_NAME =
     profile + (profileVersion ? `@${profileVersion}` : '@latest');
   const NATIVES_DIR = Paths.getNativesPath(MC_VERSION);
@@ -40,12 +41,16 @@ export default async function launchGame(
   const xuid = '2535443780439106';
   const clientId = 'your-client-id';
 
-  // const forgeJson = await loadJson(p.join(VERSION_DIR, `${VERSION}.json`));
-  const forgeJson = undefined;
+  const forgeJson = await loadJson(
+    p.join(VERSION_DIR, `${VERSION}.json`),
+    ForgeJsonSchema
+  );
+  // const forgeJson = undefined;
   const vanillaJson = await loadJson(
     p.join(VANILLA_VERSION_DIR, `${MC_VERSION}.json`),
     VanillaJsonSchema
   );
+  if (!vanillaJson) throw Error("Version json doesn't exist");
 
   function buildClasspath(vanillaJson: VanillaJson, forgeJson?: ForgeJson) {
     const classpath = [];

@@ -16,15 +16,18 @@ import {
 } from '@shared/types/json-schemas.js';
 import { DownloadProgress } from '@shared/types/ipc-events.js';
 import { loadJson, writeJson } from '../util/json.js';
+import logger from '@shared/utils/logger.js';
 
 export default async function tryInstallVersion(
   version: string,
   handleProgress: (_progress: DownloadProgress) => void
 ): Promise<void> {
   const versionListPath = p.join(Paths.VERSIONS_DIR, 'versions.json');
-  let versionList =
-    (await loadJson(versionListPath, VersionConfigSchema)) ?? [];
-  if (versionList.includes(version)) return;
+  const versionList = await loadJson(versionListPath, VersionConfigSchema);
+  if (versionList.includes(version)) {
+    logger.info(`Version ${version} already installed.`);
+    return;
+  }
 
   const NATIVE_DIR = Paths.getNativesPath(version);
 
@@ -37,6 +40,7 @@ export default async function tryInstallVersion(
   if (!versionMeta) throw new Error(`Base version ${version} not found`);
 
   const { data: rawVersionJson } = await axios.get(versionMeta.url);
+  // console.log(rawVersionJson);
   const result = VanillaJsonSchema.safeParse(rawVersionJson);
   let versionJson: VanillaJson;
   if (!result.success) {
@@ -144,7 +148,7 @@ export default async function tryInstallVersion(
     });
   }
 
-  if (!versionList.includes(version)) versionList = [...versionList, version];
+  versionList.push(version);
   writeJson(versionListPath, versionList);
   console.log(`Vanilla ${version} installation complete!`);
 }

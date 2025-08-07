@@ -119,7 +119,9 @@ export const ForgeJsonSchema = z.object({
   type: z.string(),
   mainClass: z.string(),
   inheritsFrom: z.string(),
-  logging: LoggingSchema,
+  logging: z.object({
+    client: LoggingSchema.optional(),
+  }),
   arguments: ArgumentsSchema,
   libraries: z.array(LibrarySchema),
 });
@@ -142,22 +144,23 @@ export const AssetIndexJsonSchema = z.object({
 export type AssetIndexJson = z.infer<typeof AssetIndexJsonSchema>;
 
 // ____________________S3 Profile Version Index____________________
+const MinecraftVersionSchema = z.object({
+  version: z.string(),
+  type: z.enum(['vanilla', 'forge']),
+  vanillaVersion: z.string().optional(),
+});
+
 const ProfileVersionSchema = z.object({
   id: z.string(),
   file: z.string(),
   sha256: z.string(),
   size: z.number(),
   timestamp: z.string(),
-  minecraft: z.object({
-    version: z.string(),
-    type: z.enum(['vanilla', 'forge']),
-    vanillaVersion: z.string().optional(),
-  }),
+  minecraft: MinecraftVersionSchema,
 });
 
 export const ProfileVersionListSchema = z.object({
   profileType: z.enum(['map', 'server']),
-  minecraftVersion: z.string(),
   versions: z.array(ProfileVersionSchema),
 });
 
@@ -165,7 +168,6 @@ export type ProfileVersionList = z.infer<typeof ProfileVersionListSchema>;
 
 export const LatestProfileVersionSchema = ProfileVersionSchema.extend({
   profileType: z.enum(['map', 'server']),
-  minecraftVersion: z.string(),
 });
 
 export type LatestProfileVersion = z.infer<typeof LatestProfileVersionSchema>;
@@ -174,3 +176,13 @@ export type LatestProfileVersion = z.infer<typeof LatestProfileVersionSchema>;
 export const VersionConfigSchema = z.array(z.string());
 
 export type VersionConfig = z.infer<typeof VersionConfigSchema>;
+
+// ____________________Profile Config____________________
+export const ProfileConfigSchema = z.record(
+  z.object({
+    minecraft: MinecraftVersionSchema,
+    version: z.string(),
+  })
+);
+
+export type ProfileConfig = z.infer<typeof ProfileConfigSchema>;

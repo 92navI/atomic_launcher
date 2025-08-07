@@ -3,6 +3,7 @@ export interface IpcS2CEvents {
   'splash-message': [string];
   'splash-prompt-restart': [];
   'splash-error': [string];
+  'set-profile-ver': [string];
 }
 
 export interface IpcC2SEvents {
