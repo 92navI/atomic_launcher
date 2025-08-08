@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Visibility } from './RestartPrompt.types';
 
 export default function App() {
-  const [terminal, { add, addMult }] = useArrayState([
+  const [terminal, { add, addMult }] = useArrayState<React.ReactNode>([
     'Launching app.',
     'Cracking launch codes...',
     'Checking for guidance firmware updates...',
@@ -23,7 +23,7 @@ export default function App() {
     setRestartPromptDisplay('visible');
   });
   window.ipcRenderer.on('splash-error', (_event, msg) => {
-    add(`<div style="color:red">${msg}</div>`);
+    add(<span style={{ color: 'red' }}>{msg}</span>);
   });
   return (
     <div className="splash-wrapper">
@@ -32,9 +32,11 @@ export default function App() {
       <div className="shade" />
       <div className="terminal">
         {terminal.map((msg, i) => (
-          <div key={i}>{'> ' + msg}</div>
+          <div key={i}>
+            {'> '}
+            {msg}
+          </div>
         ))}
-        {'> '}
       </div>
       <RestartPrompt visibility={RestartPromptDisplay} />
     </div>

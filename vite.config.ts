@@ -73,6 +73,10 @@ export default defineConfig({
           __dirname,
           './atomic-react-ui/src/windows/download/index.html'
         ),
+        splash: path.join(
+          __dirname,
+          './atomic-react-ui/src/windows/splash/index.html'
+        ),
       },
     },
   },

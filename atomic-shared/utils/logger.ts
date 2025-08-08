@@ -12,7 +12,6 @@ const logFormat = printf(({ level, message, timestamp, label }) => {
 });
 
 const logFile = p.join(app.getPath('userData'), 'launch.log');
-console.log(logFile);
 
 const logger = winston.createLogger({
   level: logLevel,

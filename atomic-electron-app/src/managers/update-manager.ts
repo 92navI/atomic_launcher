@@ -3,9 +3,10 @@ import { windowManager } from './window-manager';
 import { app, BrowserWindow } from 'electron';
 import * as p from 'path';
 import logger from '@shared/utils/logger';
+import { isDev } from '@shared/utils/config';
 
 autoUpdater.autoDownload = false;
-autoUpdater.forceDevUpdateConfig = true;
+autoUpdater.forceDevUpdateConfig = isDev;
 autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.autoRunAppAfterInstall = true;
 
@@ -23,8 +24,6 @@ export const updateManager = {
 
 function runAutoUpdater(): Promise<void> {
   return new Promise((resolve, reject) => {
-    autoUpdater.checkForUpdates();
-
     autoUpdater.on('update-available', (info) => {
       const msg = `Found version ${info.version} newer than current version ${autoUpdater.currentVersion}. Downloading...`;
       logger.info(msg);
@@ -51,6 +50,8 @@ function runAutoUpdater(): Promise<void> {
         ?.send('splash-error', 'A fatal error occured when updating.');
       reject(err);
     });
+
+    autoUpdater.checkForUpdates();
   });
 }
 function createSplashWindow(): BrowserWindow {
