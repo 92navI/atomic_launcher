@@ -1,6 +1,4 @@
 {
-  "name": "atomic-react-ui",
-  "version": "0.0.1",
   "scripts": {
     "typecheck": "tsc -b",
     "lint": "eslint \"src/**/*.{ts,tsx}\" --report-unused-disable-directives --max-warnings 0",

@@ -2,7 +2,7 @@
   "name": "atomic-launcher",
   "private": true,
   "version": "0.0.4-alpha",
-  "description": "A launcher that lets you join any modded server in 3 clicks.",
+  "description": "A launcher that lets you join your favorite modded server in 3 clicks.",
   "author": "_92navi_",
   "type": "module",
   "workspaces": [
@@ -24,21 +24,21 @@
     "dev": "vite",
     "typecheck:all": "npm run typecheck -workspaces",
     "build": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder --publish=never -c electron-builder.json",
-    "publish": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder --publish=always  -c electron-builder.json",
+    "publish": "npm run typecheck:all && npm run lint:fix:all && vite build && electron-builder --publish=always -c electron-builder.json",
     "build:quick": "vite build && electron-builder",
     "lint:all": "npm run lint -workspaces",
     "lint:fix:all": "npm run lint:fix -workspaces",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@types/node": "^24.0.13",
     "winston": "^3.17.0",
     "zod": "^3.25.73"
   },
   "devDependencies": {
     "@eslint/css": "^0.9.0",
     "@eslint/js": "^9.30.1",
-    "@eslint/json": "^0.12.0",
+    "@eslint/json": "^0.13.1",
+    "@types/node": "^24.2.1",
     "@types/node-7z": "^2.1.10",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
