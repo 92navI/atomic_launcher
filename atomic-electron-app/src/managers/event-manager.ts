@@ -1,5 +1,4 @@
 import { TypedIpcMain } from '@shared/types/ipc-types';
-import { app } from 'electron';
 import tryInstallLatest from './profile-manager';
 import logger from '@shared/utils/logger';
 import launchGame from '../launcher';
@@ -19,8 +18,5 @@ export default function initEventManager(ipc: TypedIpcMain): void {
         return { success: false, error: err.message };
       }
     }
-  });
-  ipc.on('splash-restart', () => {
-    app.relaunch();
   });
 }

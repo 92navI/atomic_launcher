@@ -1,6 +1,6 @@
 import { autoUpdater } from 'electron-updater';
 import { windowManager } from './window-manager';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as p from 'path';
 import logger from '@shared/utils/logger';
 import { isDev } from '@shared/utils/config';
@@ -24,7 +24,7 @@ export const updateManager = {
     });
   },
   restartAndInstall() {
-    autoUpdater.quitAndInstall();
+    autoUpdater.quitAndInstall(false, true);
   },
 };
 
@@ -62,6 +62,11 @@ async function runAutoUpdater(): Promise<void> {
         .getIpc('splash')
         ?.send('splash-error', 'A fatal error occured when updating.');
       reject(err);
+    });
+
+    ipcMain.on('splash-restart', () => {
+      autoUpdater.quitAndInstall();
+      resolve();
     });
 
     autoUpdater.checkForUpdates();

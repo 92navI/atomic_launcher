@@ -20,10 +20,10 @@
     "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
   },
   "nsis": {
-    "oneClick": false,
+    "oneClick": true,
     "perMachine": false,
-    "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "allowToChangeInstallationDirectory": false,
+    "deleteAppDataOnUninstall": true
   },
   "linux": {
     "target": ["AppImage"],
