@@ -12,7 +12,7 @@ export default function Play() {
     <div className={styles.main}>
       <Topbar />
       <div className={styles.content}>
-        <div className={styles.seasonLabel}>Imperial</div>
+        <div className={styles.seasonLabel}>Imperial SMP</div>
       </div>
       <div className={styles.footer}>
         <PlayButton />
