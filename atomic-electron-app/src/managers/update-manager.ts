@@ -11,10 +11,16 @@ autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.autoRunAppAfterInstall = true;
 
 export const updateManager = {
-  checkForUpdates() {
+  async checkForUpdates() {
     createSplashWindow().on('ready-to-show', async () => {
       windowManager.get('splash')?.show();
+
       await runAutoUpdater();
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      windowManager.get('splash')?.destroy();
+      windowManager.get('main')?.show();
     });
   },
   restartAndInstall() {
@@ -22,18 +28,25 @@ export const updateManager = {
   },
 };
 
-function runAutoUpdater(): Promise<void> {
+async function runAutoUpdater(): Promise<void> {
   return new Promise((resolve, reject) => {
     autoUpdater.on('update-available', (info) => {
       const msg = `Found version ${info.version} newer than current version ${autoUpdater.currentVersion}. Downloading...`;
       logger.info(msg);
-      windowManager.getIpc('splash')?.send('splash-message', msg);
+      windowManager.getIpc('splash')?.send('splash-start-download');
       autoUpdater.downloadUpdate();
     });
 
     autoUpdater.on('update-downloaded', () => {
       logger.info('Update downloaded, prompting to restart');
       windowManager.getIpc('splash')?.send('splash-prompt-restart');
+    });
+
+    autoUpdater.on('download-progress', (progress) => {
+      logger.info(`Download progress: ${progress.percent.toFixed(2)}%`);
+      windowManager
+        .getIpc('splash')
+        ?.send('splash-download-progress', progress.percent);
     });
 
     autoUpdater.on('update-not-available', () => {

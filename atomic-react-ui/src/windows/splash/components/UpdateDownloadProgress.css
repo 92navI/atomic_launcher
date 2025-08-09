@@ -1,0 +1,15 @@
+.progress-bar-outer {
+  margin-top: 3px;
+  width: 260px;
+  height: 18px;
+  background-color: transparent;
+  border: 1px solid rgb(255, 181, 54);
+  box-shadow: 0 0 4px rgb(255, 181, 54);
+  overflow: hidden;
+}
+
+.progress-bar-inner {
+  height: 100%;
+  background-color: rgb(255, 181, 54);
+  transition: width 0.2s ease-out;
+}

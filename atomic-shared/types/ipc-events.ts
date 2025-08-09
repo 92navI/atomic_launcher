@@ -4,6 +4,8 @@ export interface IpcS2CEvents {
   'splash-prompt-restart': [];
   'splash-error': [string];
   'set-profile-ver': [string];
+  'splash-start-download': [];
+  'splash-download-progress': [number];
 }
 
 export interface IpcC2SEvents {

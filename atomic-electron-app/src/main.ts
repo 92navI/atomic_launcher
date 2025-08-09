@@ -19,11 +19,6 @@ app.whenReady().then(async () => {
   initEventManager(typedIpcMain);
 
   await updateManager.checkForUpdates();
-
-  setTimeout(() => {
-    windowManager.get('splash')?.destroy();
-    windowManager.get('main')?.show();
-  }, 4000);
 });
 
 app.on('window-all-closed', () => {

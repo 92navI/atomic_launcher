@@ -1,44 +1,52 @@
 import './index.css';
-import { useArrayState } from '../../utils/hooks';
 import atomic from '../../assets/atomic.png';
 import icon from '../../assets/icon.jpg';
-import RestartPrompt from './RestartPrompt';
-import { useState } from 'react';
-import { Visibility } from './RestartPrompt.types';
+import { useEffect, useRef } from 'react';
+import { Terminal, TerminalHandle } from './components/Terminal';
+import RestartPrompt from './components/RestartPrompt';
+import UpdateDownloadProgress from './components/UpdateDownloadProgress';
 
 export default function App() {
-  const [terminal, { add, addMult }] = useArrayState<React.ReactNode>([
-    'Launching app.',
-    'Cracking launch codes...',
-    'Checking for guidance firmware updates...',
-  ]);
-  const [RestartPromptDisplay, setRestartPromptDisplay] =
-    useState<Visibility>('hidden');
+  const terminalRef = useRef<TerminalHandle>(null);
 
-  window.ipcRenderer.on('splash-message', (_event, msg) => {
-    add(msg);
-  });
-  window.ipcRenderer.on('splash-prompt-restart', () => {
-    addMult(['Confirm restart to install update:', '', '']);
-    setRestartPromptDisplay('visible');
-  });
-  window.ipcRenderer.on('splash-error', (_event, msg) => {
-    add(<span style={{ color: 'red' }}>{msg}</span>);
-  });
+  useEffect(() => {
+    const onMessage = (_event: unknown, msg: string) => {
+      terminalRef.current?.pushLine(msg);
+    };
+
+    const onPromptRestart = () => {
+      terminalRef.current?.pushLine(<RestartPrompt />);
+    };
+
+    const onStartDownload = () => {
+      terminalRef.current?.pushLine(<UpdateDownloadProgress />);
+    };
+
+    const onError = (_event: unknown, msg: string) => {
+      terminalRef.current?.pushLine(
+        <span style={{ color: 'red' }}>{msg}</span>
+      );
+    };
+
+    window.ipcRenderer.on('splash-message', onMessage);
+    window.ipcRenderer.on('splash-prompt-restart', onPromptRestart);
+    window.ipcRenderer.on('splash-start-download', onStartDownload);
+    window.ipcRenderer.on('splash-error', onError);
+
+    // Cleanup to prevent leaks
+    return () => {
+      window.ipcRenderer.off('splash-message', onMessage);
+      window.ipcRenderer.off('splash-prompt-restart', onPromptRestart);
+      window.ipcRenderer.off('splash-start-download', onStartDownload);
+      window.ipcRenderer.off('splash-error', onError);
+    };
+  }, []);
+
   return (
     <div className="splash-wrapper">
       <img src={icon} className="logo" />
       <img src={atomic} className="text" />
-      <div className="shade" />
-      <div className="terminal">
-        {terminal.map((msg, i) => (
-          <div key={i}>
-            {'> '}
-            {msg}
-          </div>
-        ))}
-      </div>
-      <RestartPrompt visibility={RestartPromptDisplay} />
+      <Terminal ref={terminalRef} />
     </div>
   );
 }

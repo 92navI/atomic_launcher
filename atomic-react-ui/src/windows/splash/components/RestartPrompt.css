@@ -1,13 +1,6 @@
-.restart-container {
-  position: fixed;
-  bottom: 27px;
-  left: 25px;
-  z-index: 3;
-}
-
 .restart-buttons {
   display: flex;
-  gap: 18px;
+  gap: 20px;
 }
 
 .restart-button {
