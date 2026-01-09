@@ -3,7 +3,7 @@ import * as p from 'path';
 import axios from 'axios';
 import AdmZip from 'adm-zip';
 import Paths from '../util/paths.js';
-import { downloadFile } from '../util/fetch.js';
+import { downloadFile, downloadFiles, DownloadItem } from '../util/fetch.js';
 import {
   AssetIndexJsonSchema,
   Rule,
@@ -22,15 +22,19 @@ export default async function tryInstallVersion(
   version: string,
   handleProgress: (_progress: DownloadProgress) => void
 ): Promise<void> {
+  //
+  // TODO: Move to Paths
+  //
   const versionListPath = p.join(Paths.VERSIONS_DIR, 'versions.json');
+
+  // Check if version is installed already
   const versionList = await loadJson(versionListPath, VersionConfigSchema);
   if (versionList.includes(version)) {
     logger.info(`Version ${version} already installed.`);
     return;
   }
 
-  const NATIVE_DIR = Paths.getNativesPath(version);
-
+  // Download version json
   const manifestURL: string =
     'https://launchermeta.mojang.com/mc/game/version_manifest.json';
   const { data: rawManifest } = await axios.get(manifestURL);
@@ -40,7 +44,6 @@ export default async function tryInstallVersion(
   if (!versionMeta) throw new Error(`Base version ${version} not found`);
 
   const { data: rawVersionJson } = await axios.get(versionMeta.url);
-  // console.log(rawVersionJson);
   const result = VanillaJsonSchema.safeParse(rawVersionJson);
   let versionJson: VanillaJson;
   if (!result.success) {
@@ -65,45 +68,56 @@ export default async function tryInstallVersion(
 
   // Download libraries
   const osKey = getOSNativeKey();
-  for (const [index, lib] of versionJson.libraries.entries()) {
+
+  const downloadLibs: DownloadItem[] = [];
+  const nativeLibs: string[] = [];
+
+  // Collect libraries to download
+  for (const lib of versionJson.libraries) {
     const allow = !lib.rules || allowLibrary(lib.rules);
     if (!allow) continue;
 
     const artifact = lib.downloads?.artifact;
+    if (!artifact) continue;
 
-    if (artifact) {
-      const libPath = p.join(Paths.LIB_DIR, artifact.path);
-      fs.mkdirSync(p.dirname(libPath), { recursive: true });
-      await downloadFile(artifact.url, libPath, artifact.sha1);
-      handleProgress({
-        stage: 'Downloading Libraries',
-        filename: lib.name,
-        done: index,
-        total: versionJson.libraries.length,
-      });
+    // Skip natives for other OSes
+    if (lib.name.includes('natives') && !lib.name.includes(osKey)) continue;
 
-      // Handle natives
-      if (lib.name.includes(osKey) && lib.name.includes('natives')) {
-        const jarPath = p.join(Paths.TEMP_DIR, artifact.path);
-        await downloadFile(artifact.url, jarPath, artifact.sha1);
-        handleProgress({
-          stage: 'Downloading Libraries',
-          filename: lib.name,
-          done: index,
-          total: versionJson.libraries.length,
-        });
+    const dest = p.join(Paths.LIB_DIR, artifact.path);
+    fs.mkdirSync(p.dirname(dest), { recursive: true });
 
-        fs.mkdirSync(p.dirname(NATIVE_DIR), { recursive: true });
-        const zip = new AdmZip(jarPath);
-        zip.getEntries().forEach((entry) => {
-          if (!entry.isDirectory && /\.(dll|so|dylib)$/.test(entry.entryName)) {
-            zip.extractEntryTo(entry, NATIVE_DIR, false, true);
-          }
-        });
-      }
+    downloadLibs.push({
+      url: artifact.url,
+      dest,
+      expectedHash: artifact.sha1,
+    });
+
+    // Track natives for extraction later
+    if (lib.name.includes('natives') && lib.name.includes(osKey)) {
+      nativeLibs.push(dest);
     }
   }
 
+  // Download all libraries in parallel
+  await downloadFiles(downloadLibs, (progress) => {
+    handleProgress({
+      stage: 'Downloading Libraries',
+      done: progress.done,
+      total: progress.total,
+    });
+  });
+
+  // Extract OS specific native files
+  for (const jarPath of nativeLibs) {
+    const zip = new AdmZip(jarPath);
+    zip.getEntries().forEach((entry) => {
+      if (!entry.isDirectory && /\.(dll|so|dylib)$/.test(entry.entryName)) {
+        zip.extractEntryTo(entry, Paths.getNativesPath(version), false, true);
+      }
+    });
+  }
+
+  // Download LogConfig
   const logConfigFile = versionJson.logging.client?.file;
   if (logConfigFile) {
     const logConfigDir = p.join(
@@ -114,42 +128,55 @@ export default async function tryInstallVersion(
     await downloadFile(logConfigFile.url, logConfigDir, logConfigFile.sha1);
     handleProgress({
       stage: 'Downloading Log Config',
-      filename: logConfigFile.id,
       done: 1,
       total: 1,
     });
   }
 
   // Download Assets
+  // Get asset index data
   const assetIndexUrl = versionJson.assetIndex.url;
   const assetIndexId = versionJson.assetIndex.id;
   const { data: rawAssetIndex } = await axios.get(assetIndexUrl);
   const assetIndex = AssetIndexJsonSchema.parse(rawAssetIndex);
 
-  // Save asset index
+  // Save asset index json
   const indexPath = p.join(Paths.ASSETS_DIR, 'indexes', `${assetIndexId}.json`);
   fs.mkdirSync(p.dirname(indexPath), { recursive: true });
   fs.writeFileSync(indexPath, JSON.stringify(assetIndex, null, 2));
 
-  // Iterate through assets
+  const downloadAssets: DownloadItem[] = [];
+
+  // Collect assets to download
   const assetObjects = assetIndex.objects;
-  for (const [index, [name, obj]] of Object.entries(assetObjects).entries()) {
+  for (const [_name, obj] of Object.entries(assetObjects)) {
     const hash = obj.hash;
     const subDir = hash.substring(0, 2);
     const url = `https://resources.download.minecraft.net/${subDir}/${hash}`;
-    const assetPath = p.join(Paths.ASSETS_DIR, 'objects', subDir, hash);
-    fs.mkdirSync(p.dirname(assetPath), { recursive: true });
-    await downloadFile(url, assetPath, hash);
-    handleProgress({
-      stage: 'Downloading Assets',
-      filename: name,
-      done: index,
-      total: Object.keys(assetObjects).length,
+
+    const dest = p.join(Paths.ASSETS_DIR, 'objects', subDir, hash);
+    fs.mkdirSync(p.dirname(dest), { recursive: true });
+
+    downloadAssets.push({
+      url,
+      dest,
+      expectedHash: hash,
     });
   }
 
+  // Download assets in parallel
+  await downloadFiles(downloadAssets, (progress) => {
+    handleProgress({
+      stage: 'Downloading Assets',
+      done: progress.done,
+      total: progress.total,
+    });
+  });
+
+  // Update version json that the version is installed
   versionList.push(version);
   writeJson(versionListPath, versionList);
+
   console.log(`Vanilla ${version} installation complete!`);
 }
 

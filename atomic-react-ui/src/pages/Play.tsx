@@ -1,23 +1,20 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import PlayButton from '../components/main-buttons/PlayButton';
-import Topbar from '../components/Topbar/Topbar';
-import styles from './Play.module.css';
+// import Topbar from '../components/Topbar/Topbar';
+import './Play.css';
+import bg from '../assets/images/main_image.jpg';
 
 export default function Play() {
-  const [version, setVersion] = useState('unknown');
-
-  window.ipcRenderer.on('set-profile-ver', (_event, ver) => setVersion(ver));
-
   return (
-    <div className={styles.main}>
-      <Topbar />
-      <div className={styles.content}>
-        <div className={styles.seasonLabel}>Imperial</div>
+    <>
+      <div className="list">
+        {/* <Topbar /> */}
+        <div className="frosted-box">
+          <img src={bg} alt="" />
+          <div className="border-overlay"></div>
+          <PlayButton />
+        </div>
       </div>
-      <div className={styles.footer}>
-        <PlayButton />
-        Latest Patch: {version}
-      </div>
-    </div>
+    </>
   );
 }

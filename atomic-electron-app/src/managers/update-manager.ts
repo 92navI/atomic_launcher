@@ -82,7 +82,6 @@ function createSplashWindow(): BrowserWindow {
       resizable: false,
       frame: false,
       transparent: true,
-      alwaysOnTop: true,
       show: false,
       center: true,
       titleBarStyle: 'hidden',

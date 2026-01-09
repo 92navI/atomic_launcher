@@ -7,11 +7,12 @@
   left: 0;
   height: 100vh;
   width: 60px;
+  padding-top: 30px;
   background-color: #161616;
   color: white;
   transition: width 0.2s ease-in-out;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .sidebar:hover {
@@ -25,9 +26,11 @@
 
 .sidebar-section {
   margin: 10px 7px;
-  background-color: #2e2e2e;
   border-radius: 10px;
-  /* border-bottom: 1px solid #333; */
+}
+
+.sidebar-section-top {
+  background-color: #2e2e2e;
 }
 
 .sidebar-label {
@@ -55,6 +58,7 @@
     background 0.2s,
     padding 0.2s,
     justify-content 0.2s;
+  border-radius: 10px;
 }
 
 .sidebar:hover .sidebar-item {
@@ -104,12 +108,6 @@
   width: auto;
   margin-left: 12px;
   pointer-events: auto;
-}
-
-.sidebar-bottom {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
 }
 
 .sidebar-divider {

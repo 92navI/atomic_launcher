@@ -1,6 +1,6 @@
 import './index.css';
-import atomic from '../../assets/atomic.png';
-import icon from '../../assets/icon.jpg';
+import atomic from '../../assets/icons/splash/atomic.png';
+import icon from '../../assets/icons/splash/icon.jpg';
 import { useEffect, useRef } from 'react';
 import { Terminal, TerminalHandle } from './components/Terminal';
 import RestartPrompt from './components/RestartPrompt';

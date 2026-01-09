@@ -1,13 +1,13 @@
 import './Sidebar.css';
 import { FaCompass, FaCog, FaBook } from 'react-icons/fa';
-import imperial from '../../assets/icon.jpg';
+import imperial from '../../assets/icons/menu-button.png';
 import SidebarItem from './SidebarItem';
 
 export default function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-top">
-        <div className="sidebar-section">
+        <div className="sidebar-section sidebar-section-top">
           {[...Array(5)].map((_, i) => (
             <SidebarItem
               to={`/profile${i + 1}`}
@@ -21,7 +21,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="sidebar-bottom">
+      <div className="sidebar-section">
         <SidebarItem to="/explore" icon={<FaCompass />} label="Explore" />
         <SidebarItem to="/settings" icon={<FaCog />} label="Settings" />
       </div>

@@ -1,0 +1,100 @@
+.topbar {
+  height: 30px;
+  background-color: #1b1919;
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 101;
+}
+
+@font-face {
+  font-family: 'Panton ExtraBold';
+  src: url('../../assets/fonts/Panton-ExtraBold.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.icon {
+  filter: invert(100%);
+  margin-right: 5px;
+  width: 15px;
+  height: 15px;
+}
+
+.menu-wrapper {
+  position: relative;
+  -webkit-app-region: no-drag;
+}
+
+.label {
+  position: relative;
+  padding: 0 10px;
+  margin: 5px 5px;
+  background-color: #363434;
+  border: 1px solid #4b4949;
+  border-radius: 5px;
+  font-family: 'Panton ExtraBold';
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+  -webkit-app-region: no-drag;
+}
+
+.label:hover {
+  background-color: #4b4949;
+}
+
+/* Dropdown styling */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 160px;
+  background-color: #2a2727;
+  border: 1px solid #4b4949;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: fadeIn 0.15s ease-out;
+  z-index: 100;
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #ddd;
+  font-family: 'Panton ExtraBold';
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dropdown-item:hover {
+  background-color: #3e3b3b;
+}
+
+.dropdown-item.danger:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.dropdown-separator {
+  height: 1px;
+  background-color: #4b4949;
+  margin: 4px 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

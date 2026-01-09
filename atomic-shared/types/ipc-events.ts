@@ -21,7 +21,6 @@ export interface IpcC2SInvokeEvents {
 
 export interface DownloadProgress {
   stage: string;
-  filename: string;
   done: number;
   total: number;
 }
